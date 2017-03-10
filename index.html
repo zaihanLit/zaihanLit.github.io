@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/09/VPNforSS/">如何利用VPS搭建自用VPN（ShadowSocks）科学上网</a>
+      <a class="article-title" href="/2017/03/09/VPNforSS/">如何利用VPS搭建自用VPN（ShadowSocks）科学上网（1）</a>
     </h1>
   
 
@@ -83,12 +83,54 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="/img/Error.jpg" alt="test"></p>
+        <hr>
+<p>经常有朋友问我怎么科（fan）学（qiang）上网，我的建议是在国外购买一个VPS帐号，然后在VPS上面搭建ShadowSocks服务器，通过SS VPN上网。这个方案支持电脑和手机多终端同时使用，经过一年多的验证，证明这个方案是目前来说较为稳定且性价比非常高的，成本甚至比购买国内一些收费的VPN还低。个人非常不建议使用网络上能够找到的免费VPN上网，这些VPN不稳定，不知道啥时候就挂了，更重要的是存在较大的数据安全隐患。我将从以下几个方面进行详细的介绍SS搭建方案：</p>
+<ol>
+<li><strong>购买VPS</strong></li>
+<li>搭建ShadowSocks</li>
+<li>终端配置VPN</li>
+</ol>
+<hr>
+<h4 id="1-购买VPS"><a href="#1-购买VPS" class="headerlink" title="1. 购买VPS"></a><strong>1. 购买VPS</strong></h4><hr>
+<p><strong>1） 什么是VPS</strong></p>
+<p>VPS就是Virtual Private Server，简单来说就是云主机。对用户来说就是一台可以远程登陆和管理的服务器，用户可以在这台服务器上安装操作系统和所需的软件，提供相应的服务。例如安装了http服务器软件，就可以提供www服务，安装了ftp服务器，就可以提供ftp服务。对于我们所要搭建的VPN来说，建议VPS需要具有国外独立的公网地址。</p>
+<hr>
+<p><strong>2） VPS的选择</strong></p>
+<p>目前国外有很多VPS的服务提供商，不同性能配置的VPS有不同的资费套餐，一般来说最低配置VPS的一年费用在十几美元到几十美元之间，搭SS服务器对于配置要求不算很高，最低配置都够用。我现在使用的是搬瓦工（BandwagonHOST），网站搞优惠时买的套餐，512M内存，5G硬盘，一个月500G网络流量，一年套餐费用为9.99美元。</p>
+<p>其他的VPS服务商我不太熟悉，网上有其他同学推荐：</p>
+<p>“ramnode，最便宜的套餐是15美元一年——大概不到8块钱一个月，比大部分VPN便宜，支持ipv6，不足之处是这个最便宜的套餐配置比较残废，128m内存，12G硬盘，500G每月流量，当然搭Shadowsocks还是不成问题的，只是做点别的事情就比较吃力了。”</p>
+<p>“digitalocean，一般简称DO，最便宜的套餐是5美元一个月，大概30多一个月，同样支持ipv6，比ramnode好的是内存是512m的，硬盘20G，流量传说是每月1T。”</p>
+<p>这是我的搬瓦工邀请链接 <a href="https://bwh1.net/aff.php?aff=13940" target="_blank" rel="external">https://bwh1.net/aff.php?aff=13940</a></p>
+<p>目前可选的几个推荐的优惠套餐：</p>
+<ul>
+<li>10G PROMO V3 - LOS ANGELES 512MB内存 10GSSD硬盘 1000GB流量/每月 19.99美元一年 洛杉矶机房 <a href="https://bwh1.net/aff.php?aff=13940&amp;pid=34" target="_blank" rel="external">购买链接</a></li>
+<li>10G PROMO V3 - FREMONT CA  512MB内存 10GSSD硬盘 1000GB流量/每月 19.99美元一年 弗里蒙特机房 <a href="https://bwh1.net/aff.php?aff=13940&amp;pid=36" target="_blank" rel="external">购买链接</a></li>
+<li>Bandwagon 10G - PROMO  256MB内存 10GSSD硬盘 500GB流量/每月 19.99美元一年 所有机房 <a href="https://bwh1.net/aff.php?aff=13940&amp;pid=12" target="_blank" rel="external">购买链接</a></li>
+</ul>
+<hr>
+<p><strong>3） 购买VPS</strong></p>
+<p>以第一个套餐为例，打开链接后注意选择按年付费，点击”Add to Cart”。</p>
+<p><img src="/img/20170309001.png" alt="">  </p>
+<p>点击”Checkout”</p>
+<p><img src="/img/20170309002.png" alt=""></p>
+<p>填写账号相关信息，可以选择支付宝付款，付款成功后即可使用账号登录网站使用。</p>
+<p><img src="/img/20170309003.png" alt=""></p>
+<hr>
+<p><strong>4） 初步配置</strong></p>
+<p>登录网站后，点击”Services”可以看到账号下购买的套餐信息，点击”KiwiVM Control Panel”可以进入VPS的网页管理界面。</p>
+<p><img src="/img/20170309004.png" alt=""></p>
+<p>在管理界面上，可以看到VPS的IP地址，和SSH端口。第一次使用VPS，建议将VPS操作系统改为所需要的操作系统，如果只是为了搭建SS服务器，建议选择ubuntu最新版本的64位操作系统。</p>
+<p><img src="/img/20170309005.png" alt=""></p>
+<p><img src="/img/20170309006.png" alt=""></p>
+<p>点击网页上的root shell可以直接通过网页登录VPS的命令行窗口，也可以使用第三方的SSH客户端登录。点击”Root password modification”可以重置root账户的密码。</p>
+<p><img src="/img/20170309007.png" alt=""></p>
+<hr>
+<p><strong>至此，恭喜你，你已经拥有了一台自己的VPS，let‘s do something！</strong></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.zaihan.org/2017/03/09/VPNforSS/" data-id="cj021l8nb0000lgfips9jduvb" class="article-share-link">Share</a>
+      <a data-url="http://blog.zaihan.org/2017/03/09/VPNforSS/" data-id="cj0341y2t0000bofi0687mfhc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SS/">SS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPS/">VPS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/科学上网/">科学上网</a></li></ul>
@@ -127,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://blog.zaihan.org/2017/01/15/hello-world/" data-id="cj021l8nk0001lgfickg00u4j" class="article-share-link">Share</a>
+      <a data-url="http://blog.zaihan.org/2017/01/15/hello-world/" data-id="cj0341y340001bofie67gqvo3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随想/">随想</a></li></ul>
@@ -183,7 +225,7 @@
       <ul>
         
           <li>
-            <a href="/2017/03/09/VPNforSS/">如何利用VPS搭建自用VPN（ShadowSocks）科学上网</a>
+            <a href="/2017/03/09/VPNforSS/">如何利用VPS搭建自用VPN（ShadowSocks）科学上网（1）</a>
           </li>
         
           <li>
